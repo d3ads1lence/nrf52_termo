@@ -90,7 +90,7 @@
 static ble_gap_adv_params_t m_adv_params;                                  /**< Parameters to be passed to the stack when starting advertising. */
 static uint8_t              m_adv_handle = BLE_GAP_ADV_SET_HANDLE_NOT_SET; /**< Advertising handle used to identify an advertising set. */
 static uint8_t              m_enc_advdata[BLE_GAP_ADV_SET_DATA_SIZE_MAX];  /**< Buffer for storing an encoded advertising set. */
-
+APP_TIMER_DEF(m_repeated_timer_id);
 
 /**@brief Struct that contains pointers to the encoded advertising data. */
 static ble_gap_adv_data_t m_adv_data =
@@ -256,11 +256,22 @@ static void leds_init(void)
     APP_ERROR_CHECK(err_code);
 }
 
+/**@brief Timeout handler for the repeated timer.
+ */
+static void repeated_timer_handler(void * p_context)
+{
+    bsp_board_led_invert(BSP_LED_1);
+}
 
 /**@brief Function for initializing timers. */
 static void timers_init(void)
 {
     ret_code_t err_code = app_timer_init();
+    APP_ERROR_CHECK(err_code);
+
+    err_code = app_timer_create(&m_repeated_timer_id,
+                                APP_TIMER_MODE_REPEATED,
+                                repeated_timer_handler);
     APP_ERROR_CHECK(err_code);
 }
 
@@ -305,6 +316,8 @@ int main(void)
     NRF_LOG_INFO("Beacon example started.");
     advertising_start();
 
+    ret_code_t err_code = app_timer_start(m_repeated_timer_id, APP_TIMER_TICKS(2000), NULL);
+    APP_ERROR_CHECK(err_code);
 
     // Enter main loop.
     for (;; )
