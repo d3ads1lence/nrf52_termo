@@ -2,7 +2,7 @@ PROJECT_NAME     := ble_app_beacon_pca10056_s140
 TARGETS          := nrf52840_xxaa
 OUTPUT_DIRECTORY := _build
 
-SDK_ROOT := $(HOME)/nordic/nRF5_SDK_16.0.0_98a08e2
+SDK_ROOT := $(HOME)/nordic/nRF5_SDK_17.0.2_d674dde
 PROJ_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 $(OUTPUT_DIRECTORY)/nrf52840_xxaa.out: \
@@ -284,8 +284,8 @@ flash: default
 
 # Flash softdevice
 flash_softdevice:
-	@echo Flashing: s140_nrf52_7.0.1_softdevice.hex
-	nrfjprog -f nrf52 --program $(SDK_ROOT)/components/softdevice/s140/hex/s140_nrf52_7.0.1_softdevice.hex --sectorerase
+	@echo Flashing: s140_nrf52_7.2.0_softdevice.hex
+	nrfjprog -f nrf52 --program $(SDK_ROOT)/components/softdevice/s140/hex/s140_nrf52_7.2.0_softdevice.hex --sectorerase
 	nrfjprog -f nrf52 --reset
 
 erase:
